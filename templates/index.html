@@ -15,6 +15,14 @@
     <div class="sidebar-actions">
         <button class="btn-sm" onclick="document.getElementById('modal-bulk').style.display='block'"><i class="fas fa-plus"></i> Bulk Import</button>
     </div>
+
+    <div class="search-input-wrapper">
+        <input type="text" id="search-accounts" class="search-input" placeholder="Search Accounts..." onkeyup="searchAccounts()">
+        <button class="clear-search-btn" onclick="clearSearch()" title="Clear search" type="button" id="clear-search-btn">
+            <i class="fas fa-times-circle"></i>
+        </button>
+    </div>
+
     <div id="accounts-list">
         {% for acc in accounts %}
         <div class="account-item" id="acc-{{ acc['id'] }}" onclick="selectAccount({{ acc['id'] }}, '{{ acc['email'] }}')">

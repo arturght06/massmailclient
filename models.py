@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 
 
-DATABASE_URL = os.getenv("DATABASE_URL", "mysql+mysqlconnector://user:user@localhost:3306/emails_db")
+DATABASE_URL = os.getenv("DATABASE_URL", "mysql+mysqlconnector://user:user@localhost/emails_db")
 
 engine = create_engine(DATABASE_URL, pool_recycle=3600)
 

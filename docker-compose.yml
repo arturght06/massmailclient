@@ -19,5 +19,7 @@ services:
       MYSQL_DATABASE: emails_db
       MYSQL_USER: user
       MYSQL_PASSWORD: user
+    ports:
+      - "3306:3306"
     volumes:
       - ./mysql_prod_data:/var/lib/mysql

@@ -121,3 +121,44 @@ setTimeout(async () => {
         }
     }
 }, 1000);
+
+async function searchAccounts() {
+    const query = document.getElementById('search-accounts').value.trim();
+    const res = await fetch('/search', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query})
+    });
+    const data = await res.json();
+    const list = document.getElementById('accounts-list');
+    list.innerHTML = '';
+    if (data.status === 'success' && data.accounts.length > 0) {
+        data.accounts.forEach(acc => {
+            const div = document.createElement('div');
+            div.className = 'account-item';
+            div.id = 'acc-' + acc.id;
+            div.onclick = () => selectAccount(acc.id, acc.email);
+
+            div.innerHTML = `
+                <div class="acc-info">
+                    <i id="status-icon-${acc.id}" class="fas fa-circle status-icon status-${acc.status}"></i>
+                    <span class="acc-email">${acc.email}</span>
+                </div>
+                <div class="acc-actions" onclick="event.stopPropagation()">
+                    <button class="icon-btn" onclick="copyText('${acc.email}')"><i class="far fa-copy"></i></button>
+                    <button class="icon-btn" onclick="copyText('${acc.email}:${acc.password}')"><i class="fas fa-key"></i></button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    } else {
+        list.innerHTML = '<div style="padding:20px; color:#888; text-align:center;">No accounts found.</div>';
+    }
+}
+
+function clearSearch() {
+    const input = document.getElementById('search-accounts');
+    input.value = '';
+    searchAccounts();
+}
+

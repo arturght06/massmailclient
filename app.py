@@ -104,6 +104,29 @@ def index():
     accounts = db_session.query(Account).all()
     return render_template('index.html', accounts=accounts)
 
+@app.route('/search', methods=['POST'])
+def search_accounts():
+    query = request.json.get("query", "").strip()
+    accounts = db_session.query(Account).filter(Account.email.like(f"%{query}%")).all()
+
+    if accounts:
+        return jsonify({
+            "status": "success",
+            "accounts": [
+                {
+                    "id": acc.id,
+                    "email": acc.email,
+                    "imap_server": acc.imap_server,
+                    "imap_port": acc.imap_port,
+                    "password": acc.password,
+                    "status": acc.status,
+                } for acc in accounts
+            ]
+        })
+    else:
+        return jsonify({"status": "error", "message": "No accounts found"})
+
+
 @app.route('/get_account_details/<int:account_id>')
 def get_account_details(account_id):
     account = db_session.get(Account, account_id)
