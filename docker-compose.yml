@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    image: arturght06/email-app:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=mysql+mysqlconnector://user:user@db/emails_db
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: user
+      MYSQL_DATABASE: emails_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    volumes:
+      - ./mysql_prod_data:/var/lib/mysql

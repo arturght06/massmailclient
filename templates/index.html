@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mail Manager Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
+<body>
+
+<div id="sidebar">
+    <div class="sidebar-header"><b>Mail Manager</b></div>
+    <div class="sidebar-actions">
+        <button class="btn-sm" onclick="document.getElementById('modal-bulk').style.display='block'"><i class="fas fa-plus"></i> Bulk Import</button>
+    </div>
+    <div id="accounts-list">
+        {% for acc in accounts %}
+        <div class="account-item" id="acc-{{ acc['id'] }}" onclick="selectAccount({{ acc['id'] }}, '{{ acc['email'] }}')">
+            <div class="acc-info">
+                <i id="status-icon-{{ acc['id'] }}" class="fas fa-circle status-icon status-{{ acc['status'] }}"></i>
+                <span class="acc-email">{{ acc['email'] }}</span>
+            </div>
+            <div class="acc-actions" onclick="event.stopPropagation()">
+                <button class="icon-btn" onclick="copyText('{{ acc['email'] }}')"><i class="far fa-copy"></i></button>
+                <button class="icon-btn" onclick="copyText('{{ acc['email'] }}:{{ acc['password'] }}')"><i class="fas fa-key"></i></button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="main">
+    <div class="main-toolbar">
+        <div class="toolbar-left">
+            <h3 id="current-view-title">Select Account</h3>
+        </div>
+        <div class="toolbar-right">
+            <button id="settings-btn" class="settings-btn" onclick="openSettingsModal()" disabled title="Account Settings"><i class="fas fa-cog"></i></button>
+            <button id="refresh-btn" class="refresh-btn" onclick="syncEmails()" disabled><i class="fas fa-sync-alt"></i> Check New</button>
+        </div>
+    </div>
+    <div id="emails-container"></div>
+</div>
+
+<div id="modal-email" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="document.getElementById('modal-email').style.display='none'">&times;</span>
+        <h3 id="modal-subject"></h3>
+        <div id="modal-sender"></div>
+        <div class="email-full-body" id="modal-body"></div>
+    </div>
+</div>
+
+<div id="modal-settings" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="document.getElementById('modal-settings').style.display='none'">&times;</span>
+        <h3>Edit Account</h3>
+        <div class="form-group"><label>Email</label><input type="text" id="edit-email"></div>
+        <div class="form-group"><label>Password</label><input type="text" id="edit-pass"></div>
+        <div class="form-group"><label>IMAP Server</label><input type="text" id="edit-server"></div>
+        <div style="display:flex; justify-content:space-between; margin-top:20px;">
+            <button class="btn-danger" onclick="deleteAccount()">Delete Account</button>
+            <button class="btn-success" onclick="saveAccount()">Save & Re-Login</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-bulk" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="document.getElementById('modal-bulk').style.display='none'">&times;</span>
+        <h3>Bulk Import</h3>
+        <textarea id="bulk-input" placeholder="email:pass"></textarea>
+        <button class="btn-success" onclick="processBulk()">Import</button>
+    </div>
+</div>
+
+</body>
+</html>
